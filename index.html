@@ -199,7 +199,8 @@ footer .shloka{font-family:var(--deva);color:var(--gold);margin-top:6px}
     <p class="date">2 DECEMBER 2026</p>
     <svg class="orn" viewBox="0 0 230 18" fill="none" stroke="currentColor" stroke-width="1" aria-hidden="true"><path d="M0 9h92M138 9h92"/><path d="M115 2l7 7-7 7-7-7z"/><circle cx="100" cy="9" r="1.5" fill="currentColor"/><circle cx="130" cy="9" r="1.5" fill="currentColor"/></svg>
     <div class="actions">
-      <button class="btn solid" id="enterMusic" type="button">OPEN INVITATION</button>
+      <button class="btn solid" id="enterBride" type="button">OPEN WITH BRIDE’S SONG</button>
+      <button class="btn" id="enterGroom" type="button">OPEN WITH GROOM’S SONG</button>
       <button class="quiet" id="enterQuiet" type="button">Continue without music</button>
       <p class="hint">Best with sound on.</p>
     </div>
@@ -208,7 +209,7 @@ footer .shloka{font-family:var(--deva);color:var(--gold);margin-top:6px}
 
 <!-- Background music: place your instrumental file at music/hum-tum-instrumental.mp3 -->
 <audio id="bgm" loop preload="auto">
-  <source src="music/hum-tum-instrumental.mp3" type="audio/mpeg">
+  <source id="bgmSource" src="music/hum-tum-instrumental.mp3" type="audio/mpeg">
 </audio>
 
 <nav aria-label="Sections">
@@ -362,7 +363,13 @@ if (tick()){ const t = setInterval(() => { if (!tick()) clearInterval(t); }, 100
 
 /* ---------- Background music (single track, soft, fades in) ---------- */
 const bgm = document.getElementById('bgm');
+const bgmSource = document.getElementById('bgmSource');
 const musicBtn = document.getElementById('musicBtn');
+// Select the bride or groom track when opening the invitation.
+function selectSong(song){
+  bgmSource.src = song === 'groom' ? 'music/U%20N%20I%20Mere.mp3' : 'music/hum-tum-instrumental.mp3';
+  bgm.load();
+}
 const musicTxt = document.getElementById('musicTxt');
 const TARGET_VOLUME = 0.28;
 let fadeTimer = null, wantPlaying = false;
@@ -417,7 +424,8 @@ function enter(withMusic){
   if (withMusic) startMusic();
   sessionStorage.setItem('opened', '1');
 }
-document.getElementById('enterMusic').addEventListener('click', () => enter(true));
+document.getElementById('enterBride').addEventListener('click', () => { selectSong('bride'); enter(true); });
+document.getElementById('enterGroom').addEventListener('click', () => { selectSong('groom'); enter(true); });
 document.getElementById('enterQuiet').addEventListener('click', () => enter(false));
 
 /* ---------- Add to calendar (all-day event) ---------- */
